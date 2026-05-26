@@ -11,23 +11,22 @@ echo "========================================="
 # Ensure Hermes config directory exists
 mkdir -p $HERMES_HOME
 
-# Detect provider from env
-API_KEY=${LLM_API_KEY:-$OPENROUTER_API_KEY}
-BASE_URL=${LLM_BASE_URL:-""}
+# Determine provider and settings
+API_KEY=${OLLAMA_API_KEY:-$LLM_API_KEY}
+OLLAMA_URL=${OLLAMA_HOST:-""}
 
-echo "🔑 API Key loaded (provider: custom)"
+echo "🔑 API Key loaded (provider: Ollama)"
 
 # Setup minimal Hermes config if missing
 if [ ! -f "$HERMES_HOME/config.yaml" ]; then
     echo "Setting up Hermes config..."
     
-    # Build config dynamically based on what env vars are set
     cat > $HERMES_HOME/config.yaml <<CONFIG
 model:
-  provider: openrouter
-  default: openrouter/quasar-alpha
+  provider: ollama
+  default: ${HERMES_MODEL:-llama3.2}
   api_key: ${API_KEY}
-  $(if [ -n "$BASE_URL" ]; then echo "  base_url: ${BASE_URL}"; fi)
+  $(if [ -n "$OLLAMA_URL" ]; then echo "  base_url: ${OLLAMA_URL}"; fi)
 
 agent:
   max_turns: 90

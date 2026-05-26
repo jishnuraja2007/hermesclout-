@@ -4,9 +4,11 @@ services:
     runtime: docker
     envVars:
       - key: HERMES_TELEGRAM_BOT_TOKEN
-        value: 8672394371:AAFBKs08fz_hFYOqfVvjVTGX75HmJ8Z7i8k
-      - key: LLM_API_KEY
+        value: 8672394371:***
+      - key: OLLAMA_API_KEY
         value: 540433a7504249c09c862d000b9e56db.0go1dZKldkLm1ODyy_HkEwFr
+      - key: OLLAMA_HOST
+        value: ""
       - key: HERMES_MODEL
         value: auto
       - key: PORT
