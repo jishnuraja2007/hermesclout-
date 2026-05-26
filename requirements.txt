@@ -1,0 +1,5 @@
+# Hermes Agent - Render.com Python Native Deploy
+# No Docker needed — just Python + pip
+
+flask
+hermes-agent[messaging]

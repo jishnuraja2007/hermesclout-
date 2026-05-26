@@ -1,17 +1,19 @@
 #!/bin/bash
-# Hermes Agent - Cloud Start Script
-# Runs on Render.com
+# Hermes Agent - Cloud Start Script for Render (Python Native)
 
 set -e
 
 echo "========================================="
-echo "  🧠 Hermes Agent - Starting"
+echo "  🧠 Hermes Agent - Cloud Bootup"
 echo "========================================="
+
+# Install Hermes if not already installed
+pip install hermes-agent[messaging] 2>/dev/null || true
 
 # Ensure Hermes home directory exists
 mkdir -p $HERMES_HOME
 
-# Write a minimal config if none exists
+# Write minimal config if missing
 if [ ! -f "$HERMES_HOME/config.yaml" ]; then
     echo "Writing config..."
     cat > $HERMES_HOME/config.yaml <<EOF
@@ -19,6 +21,7 @@ model:
   provider: ollama
   default: ${HERMES_MODEL:-llama3.2}
   api_key: ${OLLAMA_API_KEY:-}
+  $(if [ -n "$OLLAMA_HOST" ]; then echo "  base_url: $OLLAMA_HOST"; fi)
 
 agent:
   max_turns: 90
@@ -49,18 +52,18 @@ security:
 EOF
 fi
 
-echo "🤖 Starting Hermes Gateway..."
-
-# Start Hermes gateway in background
-$HOME/.local/bin/hermes gateway run &
-GATEWAY_PID=$!
-
-# Wait for gateway to init
-sleep 8
-
-echo "🌐 Starting Health Server..."
-python3 /home/hermes/web_health.py &
+# Start health check server in background
+echo "🌐 Starting health server..."
+python app.py &
 HEALTH_PID=$!
+
+# Wait a moment
+sleep 3
+
+# Start Hermes gateway
+echo "🤖 Starting Hermes Gateway..."
+hermes gateway run &
+GATEWAY_PID=$!
 
 echo "========================================="
 echo "✅ Hermes Agent is LIVE"
