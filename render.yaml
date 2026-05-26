@@ -5,10 +5,10 @@ services:
     envVars:
       - key: HERMES_TELEGRAM_BOT_TOKEN
         value: 8672394371:AAFBKs08fz_hFYOqfVvjVTGX75HmJ8Z7i8k
-      - key: OPENROUTER_API_KEY
+      - key: LLM_API_KEY
         value: 540433a7504249c09c862d000b9e56db.0go1dZKldkLm1ODyy_HkEwFr
       - key: HERMES_MODEL
-        value: openrouter/quasar-alpha
+        value: auto
       - key: PORT
         value: 10000
       - key: HERMES_HOME

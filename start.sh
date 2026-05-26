@@ -11,15 +11,25 @@ echo "========================================="
 # Ensure Hermes config directory exists
 mkdir -p $HERMES_HOME
 
+# Detect provider from env
+API_KEY=${LLM_API_KEY:-$OPENROUTER_API_KEY}
+BASE_URL=${LLM_BASE_URL:-""}
+
+echo "🔑 API Key loaded (provider: custom)"
+
 # Setup minimal Hermes config if missing
 if [ ! -f "$HERMES_HOME/config.yaml" ]; then
     echo "Setting up Hermes config..."
-    cat > $HERMES_HOME/config.yaml <<'CONFIG'
+    
+    # Build config dynamically based on what env vars are set
+    cat > $HERMES_HOME/config.yaml <<CONFIG
 model:
   provider: openrouter
   default: openrouter/quasar-alpha
+  api_key: ${API_KEY}
+  $(if [ -n "$BASE_URL" ]; then echo "  base_url: ${BASE_URL}"; fi)
 
-gagent:
+agent:
   max_turns: 90
 
 memory:
@@ -48,7 +58,6 @@ security:
 CONFIG
 fi
 
-echo "🔑 API keys loaded from env vars"
 echo "🤖 Starting Hermes Gateway..."
 
 # Start Hermes gateway in background
